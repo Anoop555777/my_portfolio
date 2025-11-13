@@ -26,7 +26,7 @@ function App() {
     // Mark loader as complete after animation
     const timer = setTimeout(() => {
       setLoaderComplete(true);
-    }, 6500); // Loader completes at ~6.4s
+    }, 3000); // Loader completes at ~6.4s
 
     return () => clearTimeout(timer);
   }, []);
