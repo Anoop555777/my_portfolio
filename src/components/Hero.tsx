@@ -13,7 +13,7 @@ const Hero = () => {
 
     // Typewriter effect - starts after loader completes (6.8 second delay)
     // Loader timeline: Namaste (1.2s) → Counter (3.7s) → Squares (5.8s) → Fade out (6.4s)
-    const startDelay = 2000; // Wait for loader to completely finish
+    const startDelay = 3000; // Wait for loader to completely finish
     const typingSpeed = 100; // milliseconds per character
     const lineDelay = 300; // delay between lines
 
