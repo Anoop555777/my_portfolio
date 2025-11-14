@@ -77,7 +77,7 @@ const Projects = () => {
   const currentProject = projects[selectedProject - 1] || projects[0];
 
   return (
-    <section id="projects" className="min-h-screen py-20 px-6 lg:px-8 relative overflow-hidden bg-black">
+    <section id="projects" className="min-h-screen py-20 px-2 sm:px-4 md:px-6 lg:px-8 relative overflow-x-hidden bg-black">
       {/* Background gradient */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent/20 rounded-full blur-3xl" />
 
@@ -178,9 +178,9 @@ const Projects = () => {
         </div>
 
         {/* Project Cards Carousel - 3D Carousel */}
-        <div className="relative w-full mt-20 pb-32">
+        <div className="relative w-full mt-16 md:mt-20 pb-16 md:pb-24">
           {/* Carousel Body */}
-          <div className="w-full py-5 pb-12 overflow-hidden">
+          <div className="w-full py-6 pb-12 md:py-10 md:pb-16 overflow-x-hidden overflow-y-visible">
             <motion.div
               className="relative flex cursor-grab active:cursor-grabbing"
               drag="x"
@@ -205,9 +205,10 @@ const Projects = () => {
                 }
               }}
               animate={{
-                // Each card overlaps 50%, so we only move half the card width per step
-                // Using clamp midpoint: (300 + 480) / 2 / 2 = ~195px per card
-                x: `calc(${(selectedProject - 1) * -195}px + 40vw - 195px)`
+                // Fully responsive centering for all screen sizes
+                // 50vw centers the viewport, then we offset by half card width and card position
+                // Card width: clamp(160px, 40vw, 380px), half width: clamp(80px, 20vw, 190px)
+                x: `calc(50vw - clamp(80px, 20vw, 190px) - ${(selectedProject - 1)} * clamp(80px, 20vw, 190px))`
               }}
               transition={{
                 type: 'spring',
@@ -219,25 +220,28 @@ const Projects = () => {
               {projects.map((project, index) => {
                 const itemIndex = index + 1;
                 const isActive = itemIndex === selectedProject;
-                const rotation = isActive ? 0 : (itemIndex < selectedProject ? 40 : -40);
+                // Gentle rotation for smaller cards
+                const rotation = isActive ? 0 : (itemIndex < selectedProject ? 30 : -30);
                 
                 // Z-index: active card should be highest, then decrease by distance from active
                 const distance = Math.abs(itemIndex - selectedProject);
                 const zIndex = isActive ? 50 : (50 - distance * 5);
                 
-                // Scale and shadow based on position
-                const scale = isActive ? 1 : 0.95;
-                const translateY = isActive ? -10 : 0;
+                // Scale and shadow based on position (subtle for smaller cards)
+                const scale = isActive ? 1 : 0.96;
+                const translateY = isActive ? -6 : 0;
 
-                return (
+                 return (
                   <div
                     key={project.title}
                     className="relative flex-shrink-0"
                     style={{ 
-                      width: 'clamp(300px, 28vw, 480px)',
-                      height: '35vh',
-                      minHeight: '300px',
-                      marginLeft: index === 0 ? '0' : 'calc(clamp(300px, 28vw, 480px) * -0.5)',
+                      width: 'clamp(160px, 40vw, 380px)',
+                      height: 'clamp(200px, 28vh, 320px)',
+                      minHeight: '200px',
+                      maxHeight: '320px',
+                      marginLeft: index === 0 ? '0' : 'calc(clamp(160px, 40vw, 380px) * -0.5)',
+                      marginBottom: '25px',
                       zIndex: zIndex,
                       perspective: '1200px'
                     }}
@@ -268,39 +272,39 @@ const Projects = () => {
                           backfaceVisibility: 'hidden'
                         }}
                       >
-                        {/* Project Image */}
-                        <div className="h-2/3 overflow-hidden">
-                          <OptimizedImage
-                            src={project.image}
-                            alt={project.title}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
-                        </div>
+                         {/* Project Image */}
+                         <div className="h-[65%] sm:h-2/3 overflow-hidden">
+                           <OptimizedImage
+                             src={project.image}
+                             alt={project.title}
+                             className="w-full h-full object-cover"
+                             loading="lazy"
+                           />
+                         </div>
                         
-                        {/* Card Content */}
-                        <div className="p-6 h-1/3 flex flex-col justify-center bg-gradient-to-b from-gray-800 to-gray-900">
-                          <h4 className="text-xl font-bold mb-2 text-white">
-                            {project.title}
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {project.tech.slice(0, 3).map((tech) => (
-                              <span
-                                key={tech}
-                                className="px-2 py-1 text-xs bg-white/10 border border-white/20 rounded text-white"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
+                         {/* Card Content */}
+                         <div className="p-1.5 sm:p-2 md:p-4 h-1/3 flex flex-col justify-center bg-gradient-to-b from-gray-800 to-gray-900">
+                           <h4 className="text-[10px] sm:text-xs md:text-lg font-bold mb-0.5 sm:mb-1 md:mb-1.5 text-white line-clamp-1">
+                             {project.title}
+                           </h4>
+                           <div className="flex flex-wrap gap-0.5 sm:gap-1">
+                             {project.tech.slice(0, 2).map((tech) => (
+                               <span
+                                 key={tech}
+                                 className="px-1 sm:px-1.5 md:px-2 py-0.5 text-[7px] sm:text-[9px] md:text-[11px] bg-white/10 border border-white/20 rounded text-white"
+                               >
+                                 {tech}
+                               </span>
+                             ))}
+                           </div>
+                         </div>
 
                         {/* Active Indicator */}
                         {isActive && (
                           <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            className="absolute top-4 right-4 w-4 h-4 bg-primary rounded-full shadow-lg shadow-primary/50"
+                            className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 md:top-3 md:right-3 w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3.5 md:h-3.5 bg-primary rounded-full shadow-lg shadow-primary/50"
                           />
                         )}
                       </div>
@@ -308,8 +312,8 @@ const Projects = () => {
 
                     {/* Bottom Shadow for Ground Effect */}
                     <div 
-                      className={`absolute -bottom-6 left-1/2 -translate-x-1/2 w-4/5 h-8 bg-black rounded-full blur-xl transition-opacity duration-400 ${
-                        isActive ? 'opacity-60' : 'opacity-30'
+                      className={`absolute -bottom-3 sm:-bottom-4 md:-bottom-5 left-1/2 -translate-x-1/2 w-2/3 sm:w-3/4 h-4 sm:h-5 md:h-6 bg-black rounded-full blur-md sm:blur-lg transition-opacity duration-400 ${
+                        isActive ? 'opacity-45 sm:opacity-50 md:opacity-55' : 'opacity-20 sm:opacity-25 md:opacity-28'
                       }`}
                     />
                   </div>
