@@ -1,31 +1,41 @@
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Mail, MapPin, Phone, Send, CheckCircle, AlertCircle } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import { useState } from "react";
+import {
+  Send,
+  CheckCircle,
+  AlertCircle,
+  ArrowUp,
+  ArrowUpRight,
+  Github,
+  Linkedin,
+} from "lucide-react";
+import emailjs from "@emailjs/browser";
+import SectionHeading from "./SectionHeading";
+import Magnetic from "./Magnetic";
+import ParallaxLayer from "./ParallaxLayer";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
+    name: "",
+    email: "",
+    message: "",
   });
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-  const [statusMessage, setStatusMessage] = useState('');
+  const [status, setStatus] = useState<
+    "idle" | "sending" | "success" | "error"
+  >("idle");
+  const [statusMessage, setStatusMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('sending');
-    setStatusMessage('Sending your message...');
+    setStatus("sending");
+    setStatusMessage("Sending your message...");
 
     try {
       // EmailJS configuration
-      const serviceId = 'YOUR_SERVICE_ID'; // Replace with your EmailJS service ID
-      const templateId = 'YOUR_TEMPLATE_ID'; // Replace with your EmailJS template ID
-      const publicKey = 'YOUR_PUBLIC_KEY'; // Replace with your EmailJS public key
+      const serviceId = "YOUR_SERVICE_ID"; // Replace with your EmailJS service ID
+      const templateId = "YOUR_TEMPLATE_ID"; // Replace with your EmailJS template ID
+      const publicKey = "YOUR_PUBLIC_KEY"; // Replace with your EmailJS public key
 
-      // Send email using EmailJS
       await emailjs.send(
         serviceId,
         templateId,
@@ -33,259 +43,294 @@ const Contact = () => {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
-          to_email: 'ajbisht99@gmail.com', // Your email
+          to_email: "ajbisht99@gmail.com",
         },
-        publicKey
+        publicKey,
       );
 
-      setStatus('success');
-      setStatusMessage('Message sent successfully! I\'ll get back to you soon.');
-      setFormData({ name: '', email: '', message: '' });
-      
-      // Reset status after 5 seconds
+      setStatus("success");
+      setStatusMessage("Message sent successfully! I'll get back to you soon.");
+      setFormData({ name: "", email: "", message: "" });
+
       setTimeout(() => {
-        setStatus('idle');
-        setStatusMessage('');
+        setStatus("idle");
+        setStatusMessage("");
       }, 5000);
     } catch (error) {
-      console.error('EmailJS Error:', error);
-      setStatus('error');
-      setStatusMessage('Failed to send message. Please try again or email me directly.');
-      
-      // Reset status after 5 seconds
+      console.error("EmailJS Error:", error);
+      setStatus("error");
+      setStatusMessage(
+        "Failed to send message. Please try again or email me directly.",
+      );
+
       setTimeout(() => {
-        setStatus('idle');
-        setStatusMessage('');
+        setStatus("idle");
+        setStatusMessage("");
       }, 5000);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const contactInfo = [
+  const fields = [
     {
-      icon: Mail,
-      label: 'Email',
-      value: 'ajbisht99@gmail.com',
-      href: 'mailto:ajbisht99@gmail.com',
+      index: "01",
+      name: "name",
+      label: "What’s your name?",
+      placeholder: "John Doe *",
+      type: "text",
     },
     {
-      icon: Phone,
-      label: 'Phone',
-      value: '+919458966112',
-      href: 'tel:+919458966112',
+      index: "02",
+      name: "email",
+      label: "What’s your email?",
+      placeholder: "john@example.com *",
+      type: "email",
     },
     {
-      icon: MapPin,
-      label: 'Location',
-      value: 'khatima, UK,India',
-      href: '#',
+      index: "03",
+      name: "message",
+      label: "Tell me about your project",
+      placeholder: "A portfolio, a product, a wild idea… *",
+      type: "textarea",
     },
-  ];
+  ] as const;
+
+  const inputClasses =
+    "w-full bg-transparent rounded-none px-0 py-2 text-xl md:text-2xl font-display placeholder:text-muted/40 placeholder:font-normal focus:outline-none";
 
   return (
-    <section id="contact" className="min-h-screen py-20 px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute top-20 left-10 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-20 right-10 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+    <section
+      id="contact"
+      className="relative pt-28 pb-10 px-6 lg:px-12 border-t border-line overflow-hidden"
+    >
+      {/* Ghost word drifting behind the section */}
+      <ParallaxLayer
+        speed={0.7}
+        className="absolute -left-10 top-1/3 pointer-events-none select-none hidden lg:block"
+      >
+        <span
+          className="outline-text font-display font-extrabold uppercase text-[15vw] leading-none opacity-15"
+          aria-hidden="true"
         >
-          <h2 className="text-5xl md:text-7xl font-display font-bold mb-6">
-            Let's <span className="gradient-text">Connect</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Have a project in mind or just want to chat? Drop me a message!
-          </p>
-        </motion.div>
+          Contact
+        </span>
+      </ParallaxLayer>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
-          >
+      {/* Floating accent shapes at different depths */}
+      <ParallaxLayer
+        speed={-0.45}
+        className="absolute right-[8%] top-40 pointer-events-none hidden md:block"
+      >
+        <div
+          className="w-24 h-24 rounded-full border border-accent/25"
+          aria-hidden="true"
+        />
+      </ParallaxLayer>
+      <ParallaxLayer
+        speed={-0.7}
+        className="absolute left-[10%] bottom-[30%] pointer-events-none hidden md:block"
+      >
+        <div className="w-3 h-3 rounded-full bg-accent/50" aria-hidden="true" />
+      </ParallaxLayer>
+      <ParallaxLayer
+        speed={-0.3}
+        className="absolute right-[28%] bottom-[20%] pointer-events-none hidden md:block"
+      >
+        <span
+          className="block font-display text-5xl text-accent/30 select-none"
+          aria-hidden="true"
+        >
+          ✳
+        </span>
+      </ParallaxLayer>
+
+      <div className="relative max-w-[90rem] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+          <div className="lg:col-span-3">
+            <p className="sticky top-28 font-mono text-xs uppercase tracking-[0.3em] text-muted">
+              <span className="text-accent">04</span> — Contact
+            </p>
+          </div>
+          <div className="lg:col-span-9">
+            <SectionHeading
+              segments={[
+                { text: "Let’s work " },
+                { text: "together", accent: true },
+              ]}
+              className="text-5xl md:text-7xl xl:text-8xl font-display font-extrabold uppercase leading-[0.95]"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          {/* Left: big email + meta */}
+          <div className="lg:col-span-4 flex flex-col gap-12">
             <div>
-              <h3 className="text-3xl font-bold mb-6">Get in Touch</h3>
-              <p className="text-gray-400 text-lg leading-relaxed mb-8">
-                I'm always open to discussing new projects, creative ideas, or
-                opportunities to be part of your visions. Let's build something
-                amazing together!
+              <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted mb-4">
+                Don’t like forms?
               </p>
+              <a
+                href="mailto:ajbisht99@gmail.com"
+                className="link-underline inline-flex items-center gap-3 text-2xl md:text-3xl font-display font-semibold break-all hover:text-accent transition-colors duration-300"
+              >
+                ajbisht99@gmail.com
+                <ArrowUpRight className="w-6 h-6 shrink-0" />
+              </a>
             </div>
 
-            <div className="space-y-6">
-              {contactInfo.map((info, index) => (
-                <motion.a
-                  key={info.label}
-                  href={info.href}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ x: 10 }}
-                  className="flex items-center gap-4 group"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <info.icon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-400">{info.label}</div>
-                    <div className="text-lg font-medium group-hover:text-primary transition-colors">
-                      {info.value}
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted mb-4">
+                Elsewhere
+              </p>
+              <div className="flex gap-3">
+                {[
+                  { icon: Github, href: "#", label: "GitHub" },
+                  { icon: Linkedin, href: "#", label: "LinkedIn" },
+                ].map((social) => (
+                  <Magnetic key={social.label} strength={0.4}>
+                    <a
+                      href={social.href}
+                      aria-label={social.label}
+                      className="inline-flex w-12 h-12 items-center justify-center rounded-full border border-line hover:border-accent hover:text-accent transition-colors duration-300"
+                    >
+                      <social.icon className="w-5 h-5" />
+                    </a>
+                  </Magnetic>
+                ))}
+              </div>
+            </div>
+
+            <p className="text-muted leading-relaxed max-w-sm">
+              I'm always open to discussing new projects, creative ideas, or
+              opportunities to be part of your visions.
+            </p>
+          </div>
+
+          {/* Right: numbered editorial form */}
+          <div className="lg:col-span-7 lg:col-start-6">
+            <form onSubmit={handleSubmit}>
+              <div className="border-t border-line">
+                {fields.map((field) => (
+                  <div
+                    key={field.name}
+                    className="group relative border-b border-line"
+                  >
+                    {/* Accent underline sweeps in while the field is focused */}
+                    <span
+                      aria-hidden="true"
+                      className="absolute bottom-0 left-0 h-px w-full bg-accent origin-left scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500 ease-out"
+                    />
+                    <div className="flex gap-6 py-8">
+                      <span className="font-mono text-xs text-muted pt-1.5 select-none">
+                        {field.index}
+                      </span>
+                      <div className="flex-1">
+                        <label
+                          htmlFor={field.name}
+                          className="block font-mono text-xs uppercase tracking-[0.3em] text-muted mb-3 group-focus-within:text-accent transition-colors duration-300"
+                        >
+                          {field.label}
+                        </label>
+                        {field.type === "textarea" ? (
+                          <textarea
+                            id={field.name}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                            required
+                            rows={4}
+                            className={`${inputClasses} resize-none`}
+                            placeholder={field.placeholder}
+                          />
+                        ) : (
+                          <input
+                            type={field.type}
+                            id={field.name}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                            required
+                            className={inputClasses}
+                            placeholder={field.placeholder}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Decorative Element */}
-            <motion.div
-              animate={{
-                rotate: [0, 360],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-              className="hidden lg:block w-64 h-64 border-2 border-primary/20 rounded-full absolute bottom-10 left-10"
-            />
-          </motion.div>
-
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <form onSubmit={handleSubmit} className="glass p-8 rounded-3xl space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-primary transition-colors"
-                  placeholder="John Doe"
-                />
+                ))}
               </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-primary transition-colors"
-                  placeholder="john@example.com"
-                />
+              {/* Big magnetic send button straddling the last row */}
+              <div className="relative z-10 flex justify-center lg:justify-end lg:pr-16 -mt-14 md:-mt-16">
+                <Magnetic strength={0.35}>
+                  <button
+                    type="submit"
+                    disabled={status === "sending"}
+                    aria-label="Send message"
+                    className={`w-32 h-32 md:w-36 md:h-36 rounded-full font-semibold text-sm uppercase tracking-wider flex flex-col items-center justify-center gap-2 transition-all duration-300 ${
+                      status === "sending"
+                        ? "bg-muted/30 text-muted cursor-not-allowed"
+                        : "bg-accent text-ink hover:scale-110 hover:bg-paper"
+                    }`}
+                  >
+                    <Send className="w-5 h-5" />
+                    {status === "sending" ? "Sending…" : "Send it"}
+                  </button>
+                </Magnetic>
               </div>
 
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-2">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-primary transition-colors resize-none"
-                  placeholder="Tell me about your project..."
-                />
+              <div aria-live="polite" className="min-h-[3.5rem] mt-6">
+                {statusMessage && (
+                  <div
+                    className={`flex items-center gap-3 font-mono text-sm ${
+                      status === "success"
+                        ? "text-accent"
+                        : status === "error"
+                          ? "text-red-400"
+                          : "text-muted"
+                    }`}
+                  >
+                    {status === "success" && (
+                      <CheckCircle className="w-5 h-5 shrink-0" />
+                    )}
+                    {status === "error" && (
+                      <AlertCircle className="w-5 h-5 shrink-0" />
+                    )}
+                    <span>{statusMessage}</span>
+                  </div>
+                )}
               </div>
-
-              <motion.button
-                type="submit"
-                disabled={status === 'sending'}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                whileHover={{ scale: status === 'sending' ? 1 : 1.02 }}
-                whileTap={{ scale: status === 'sending' ? 1 : 0.98 }}
-                className={`w-full py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all duration-300 ${
-                  status === 'sending'
-                    ? 'bg-gray-600 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-primary to-secondary hover:shadow-2xl'
-                }`}
-              >
-                <span>{status === 'sending' ? 'Sending...' : 'Send Message'}</span>
-                <motion.div
-                  animate={{ x: isHovered && status !== 'sending' ? 5 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Send className="w-5 h-5" />
-                </motion.div>
-              </motion.button>
-
-              {/* Status Message */}
-              {statusMessage && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className={`flex items-center gap-2 p-4 rounded-xl ${
-                    status === 'success'
-                      ? 'bg-green-500/20 border border-green-500/50 text-green-300'
-                      : status === 'error'
-                      ? 'bg-red-500/20 border border-red-500/50 text-red-300'
-                      : 'bg-blue-500/20 border border-blue-500/50 text-blue-300'
-                  }`}
-                >
-                  {status === 'success' && <CheckCircle className="w-5 h-5" />}
-                  {status === 'error' && <AlertCircle className="w-5 h-5" />}
-                  <span className="text-sm">{statusMessage}</span>
-                </motion.div>
-              )}
             </form>
-          </motion.div>
+          </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="text-center mt-20 pt-10 border-t border-white/10"
-      >
-        <p className="text-gray-400">
-          © 2025 My Portfolio. Designed & Built with{' '}
-          <span className="text-red-500">❤</span> and{' '}
-          <span className="gradient-text">creativity</span>
-        </p>
-      </motion.div>
+        {/* Footer */}
+        <footer className="mt-28 pt-8 border-t border-line flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
+            © 2026 Anoop Singh — Designed & coded with obsession
+          </p>
+
+          <Magnetic strength={0.4}>
+            <a
+              href="#home"
+              aria-label="Back to top"
+              className="inline-flex w-12 h-12 items-center justify-center rounded-full border border-line hover:border-accent hover:text-accent transition-colors duration-300 group"
+            >
+              <ArrowUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+            </a>
+          </Magnetic>
+        </footer>
+      </div>
     </section>
   );
 };
 
 export default Contact;
-

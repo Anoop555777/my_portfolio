@@ -30,13 +30,13 @@ const CustomCursor = () => {
 
   return (
     <>
-      {/* Main Cursor */}
+      {/* Accent dot */}
       <motion.div
-        className="fixed top-0 left-0 w-6 h-6 pointer-events-none z-[9999] mix-blend-difference"
+        className="fixed top-0 left-0 w-3 h-3 pointer-events-none z-[9999]"
         animate={{
-          x: mousePosition.x - 12,
-          y: mousePosition.y - 12,
-          scale: isHovering ? 1.5 : 1,
+          x: mousePosition.x - 6,
+          y: mousePosition.y - 6,
+          scale: isHovering ? 2.4 : 1,
         }}
         transition={{
           type: "spring",
@@ -44,16 +44,16 @@ const CustomCursor = () => {
           damping: 28,
         }}
       >
-        <div className="w-full h-full rounded-full bg-white" />
+        <div className="w-full h-full rounded-full bg-accent" />
       </motion.div>
 
-      {/* Trailing Cursor */}
+      {/* Trailing ring */}
       <motion.div
-        className="fixed top-0 left-0 w-12 h-12 pointer-events-none z-[9998] mix-blend-difference"
+        className="fixed top-0 left-0 w-10 h-10 pointer-events-none z-[9998]"
         animate={{
-          x: mousePosition.x - 24,
-          y: mousePosition.y - 24,
-          scale: isHovering ? 1.2 : 1,
+          x: mousePosition.x - 20,
+          y: mousePosition.y - 20,
+          scale: isHovering ? 1.6 : 1,
         }}
         transition={{
           type: "spring",
@@ -61,11 +61,10 @@ const CustomCursor = () => {
           damping: 15,
         }}
       >
-        <div className="w-full h-full rounded-full border-2 border-white opacity-50" />
+        <div className="w-full h-full rounded-full border border-paper/40" />
       </motion.div>
     </>
   );
 };
 
 export default CustomCursor;
-

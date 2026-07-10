@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 import { useState, memo, useCallback } from 'react';
 import OptimizedImage from './OptimizedImage';
+import ParallaxLayer from './ParallaxLayer';
+import VelocitySkew from './VelocitySkew';
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(3); // Start at middle item (3 of 5)
@@ -78,8 +80,13 @@ const Projects = () => {
 
   return (
     <section id="projects" className="min-h-screen py-20 px-2 sm:px-4 md:px-6 lg:px-8 relative overflow-x-hidden bg-black">
-      {/* Background gradient */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent/20 rounded-full blur-3xl" />
+      {/* Background gradient drifting slower than the page */}
+      <ParallaxLayer
+        speed={0.6}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px]"
+      >
+        <div className="w-full h-full bg-accent/20 rounded-full blur-3xl" />
+      </ParallaxLayer>
 
       <div className="max-w-7xl mx-auto relative z-10">
 
@@ -96,12 +103,14 @@ const Projects = () => {
               transition={{ duration: 0.8 }}
               className="mb-12"
             >
-              <h2 className="text-6xl md:text-8xl font-serif font-light mb-3 tracking-tight">
-                Projects
-              </h2>
-              <p className="text-xl text-gray-400 font-light tracking-wide">
-                Featured Excellence
-              </p>
+              <ParallaxLayer speed={-0.12}>
+                <h2 className="text-6xl md:text-8xl font-serif font-light mb-3 tracking-tight">
+                  Projects
+                </h2>
+                <p className="text-xl text-gray-400 font-light tracking-wide">
+                  Featured Excellence
+                </p>
+              </ParallaxLayer>
             </motion.div>
 
             {/* Description */}
@@ -177,8 +186,8 @@ const Projects = () => {
           </motion.div>
         </div>
 
-        {/* Project Cards Carousel - 3D Carousel */}
-        <div className="relative w-full mt-16 md:mt-20 pb-16 md:pb-24">
+        {/* Project Cards Carousel - 3D Carousel, shears with scroll velocity */}
+        <VelocitySkew max={2} className="relative w-full mt-16 md:mt-20 pb-16 md:pb-24">
           {/* Carousel Body */}
           <div className="w-full py-6 pb-12 md:py-10 md:pb-16 overflow-x-hidden overflow-y-visible">
             <motion.div
@@ -321,9 +330,7 @@ const Projects = () => {
               })}
             </motion.div>
           </div>
-
-
-        </div>
+        </VelocitySkew>
 
       </div>
     </section>
